@@ -96,7 +96,7 @@ class DoubleTextFieldBackgrounddWidget extends StatelessWidget {
         borderRadius: BorderRadiusGeometry.all(Radius.circular(cornerRound))
       ),
       child: SizedBox(
-        height: 100,
+        height: 80,
         child: OverflowBox(
           child: Row(
             spacing: 20,
@@ -135,14 +135,9 @@ class SingleTextFieldBackgroundWidget extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadiusGeometry.all(Radius.circular(cornerRound))
       ),
-      child: Row(
-        mainAxisAlignment: .spaceBetween,
-        children: [
-          Padding(
-            padding: childPadding,
-            child: child,
-          ),
-        ],
+      child: Padding(
+        padding: childPadding,
+        child: child,
       ),
     );
   }

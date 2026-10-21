@@ -3,8 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:mobile/provider/config_provider.dart';
-import 'package:mobile/widgets/widgets.dart';
+import 'package:SyncCloud/provider/config_provider.dart';
+import 'package:SyncCloud/widgets/background_widget.dart';
+import 'package:SyncCloud/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
@@ -36,28 +37,49 @@ class _MainScreenState extends State<MainScreen> {
     var theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('MyShare'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, "/config");
-            },
-            icon: Icon(Icons.settings),
-          ),
-        ],
-      ),
       body: SafeArea(
-        child: Stack(
-          alignment: .center,
-          children: [
-            MessageField(messageController: _messageController),
+        child: BackgroundWidget(
+          childrens: [
+            Align(
+              alignment: .topRight,
+              child: Row(
+                mainAxisSize: .min,
+                children: [
+                  // IconButton(
+                  //   onPressed: () {
+                  //     Navigator.pushNamed(context, "/debug");
+                  //   },
+                  //   icon: Icon(Icons.bug_report_outlined),
+                  // ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "/config");
+                    },
+                    icon: Icon(Icons.settings),
+                  ),
+                ],
+              ),
+            ),
+
+            Align(
+              alignment:  Alignment(0, -0.5),
+              child: Text(
+                "SyncCloud",
+                style: TextStyle(fontSize: 50),
+              ),
+            ),
+
+            Align(
+              alignment: .center,
+              child: MessageField(messageController: _messageController)
+            ),
+            
             Align(
               alignment: .bottomCenter,
               child: StopSyncButton(isServiceActive: isServiceActive),
             ),
           ],
-        ),
+        )
       ),
     );
   }

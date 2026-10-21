@@ -20,18 +20,18 @@ Future<void> initializeService(ConfigProvider configProv) async {
       }
     }
   );
-
+  
   await service.configure(
     iosConfiguration: IosConfiguration(
-      autoStart: true,
+      autoStart: configProv.autoStart,
       onForeground: onStart,
       onBackground: onIosBackground,
     ),
     androidConfiguration: AndroidConfiguration(
-      autoStart: true,
+      autoStart: configProv.autoStart,
       onStart: onStart,
       isForegroundMode: true,
-      autoStartOnBoot: true,
+      autoStartOnBoot: configProv.autoStart,
     ),
   );
 
@@ -44,23 +44,25 @@ Future<void> initializeService(ConfigProvider configProv) async {
     });
   });
 
-  service.startService();
+  // service.startService();
 }
 
 Future DatabaseInit(ConfigProvider config) async {
   await Hive.initFlutter();
-  var box = await Hive.openBox("cfg");
-  if (box.isEmpty) {
-    box.add(
-      {
-        "receiverIp": "192.168.1.1",
-        "portSync": 5000
-      }
-    );
+  if (await config.boxIsEmpty()) {
+    config.boxPutAll({
+      "receiverIp": "192.168.1.1",
+      "portSync": 5000,
+      "autoStart": false
+    });
   }
-  var data = box.get(0);
-
-  config.set(data["receiverIp"] ?? "192.168.1.1", data["portSync"] ?? 5000);
+  var data = await config.boxGetAll();
+  print(data);
+  config.set(
+    data["receiverIp"] ?? "192.168.1.1",
+    data["portSync"] ?? 5000,
+    data["autoStart"] ?? false
+  );
 }
 
 void main() async {
@@ -68,17 +70,14 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
-  
+
   await DatabaseInit(config);
   await initializeService(config);
   await startServer(config);
-  
+
   runApp(
     MultiProvider(
       providers: [
-        // ChangeNotifierProvider(
-        //   create: (context) => background
-        // ),
         ChangeNotifierProvider(
           create: (context) => config
         ),
@@ -94,6 +93,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: "SyncCloud",
       theme: ThemeData(
         colorSchemeSeed: Colors.green[500],
         brightness: Brightness.dark,
@@ -104,6 +104,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/": (context) => MainScreen(),
         "/config": (context) => ConfigScreen(),
+        "/debug":(context) => DebugScreen()
       },
     );
   }

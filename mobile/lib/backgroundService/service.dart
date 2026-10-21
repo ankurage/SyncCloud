@@ -6,7 +6,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:mobile/provider/config_provider.dart';
+import 'package:SyncCloud/provider/config_provider.dart';
 
 void startBackgroundService() {
   final service = FlutterBackgroundService();
